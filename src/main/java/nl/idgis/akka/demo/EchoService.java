@@ -1,9 +1,15 @@
 package nl.idgis.akka.demo;
 
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import scala.concurrent.duration.FiniteDuration;
 
 public class EchoService extends UntypedActor {
+	
+	private Random random;
 
 	@Override
 	public void onReceive(Object msg) throws Exception {
@@ -14,8 +20,20 @@ public class EchoService extends UntypedActor {
 		}
 	}
 	
+	@Override
+	public void preStart() {
+		random = new Random();
+	}
+	
 	private void handleEchoRequest(EchoRequest msg) {
-		getSender().tell(new EchoResponse(msg.getMessage()), getSelf());
+		int delay = random.nextInt(1000);
+		
+		getContext().system().scheduler().scheduleOnce(
+			FiniteDuration.apply(delay, TimeUnit.MILLISECONDS),
+			getSender(),
+			new EchoResponse(msg.getMessage()),
+			getContext().dispatcher(),
+			getSelf());
 	}
 
 	public static Props props() {
