@@ -7,7 +7,6 @@ import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import scala.concurrent.Await;
-import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 
 public class Main {
@@ -17,17 +16,24 @@ public class Main {
 		
 		ActorRef echoService = actorSystem.actorOf(EchoService.props());
 		ActorRef delayMeasureService = actorSystem.actorOf(DelayMeasureService.props());
+		ActorRef printService = actorSystem.actorOf(PrintService.props());
 		
-		for(int i = 0; i < 10; i++) {
-			Future<Object> future = Patterns.ask(
-				delayMeasureService,
+		final int requestCount = 10;
+		
+		for(int i = 0; i < requestCount; i++) {
+			delayMeasureService.tell(
 				new MeasureDelayRequest(
 					echoService,
 					new EchoRequest("message" + i)), 
-				Timeout.apply(5, TimeUnit.SECONDS));
-			
-			System.out.println("" + i + ": " + Await.result(future, Duration.Inf()));
+				printService);
 		}
+		
+		Await.ready(
+			Patterns.ask(
+				printService, 
+				new AwaitCount(requestCount), 
+				Timeout.apply(5, TimeUnit.SECONDS)),
+			Duration.Inf());
 		
 		Await.ready(actorSystem.terminate(), Duration.Inf());
 	}
