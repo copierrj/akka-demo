@@ -1,5 +1,7 @@
 package nl.idgis.akka.demo;
 
+import java.util.stream.Stream;
+
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
@@ -51,5 +53,17 @@ public class Main extends UntypedActor {
 	private void handleCountReached(CountReached msg) {
 		log.info("stopping...");
 		getContext().stop(getSelf());
+	}
+	
+	public static void main(String[] args) {
+		// call akkaMain with the same arguments,
+		// prepended with the name of this class.
+		
+		akka.Main.main(
+			Stream
+				.concat(
+					Stream.of(Main.class.getCanonicalName()),
+					Stream.of(args))
+				.toArray(String[]::new));
 	}
 }

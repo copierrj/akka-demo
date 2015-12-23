@@ -10,6 +10,4 @@ dependencies {
 	compile 'com.typesafe.akka:akka-actor_2.11:2.4.1'
 }
 
-mainClassName = 'akka.Main'
-
-run.args 'nl.idgis.akka.demo.Main'
+mainClassName = 'nl.idgis.akka.demo.Main'
