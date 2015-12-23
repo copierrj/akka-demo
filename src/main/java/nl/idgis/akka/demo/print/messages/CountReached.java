@@ -1,4 +1,4 @@
-package nl.idgis.akka.demo;
+package nl.idgis.akka.demo.print.messages;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package nl.idgis.akka.demo;
+package nl.idgis.akka.demo.print;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +8,8 @@ import java.util.Set;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import nl.idgis.akka.demo.print.messages.AwaitCount;
+import nl.idgis.akka.demo.print.messages.CountReached;
 
 public class PrintService extends UntypedActor {
 	

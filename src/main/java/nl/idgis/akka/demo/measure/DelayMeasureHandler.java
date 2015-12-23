@@ -1,10 +1,12 @@
-package nl.idgis.akka.demo;
+package nl.idgis.akka.demo.measure;
 
 import java.util.Objects;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import nl.idgis.akka.demo.echo.messages.EchoResponse;
+import nl.idgis.akka.demo.measure.messages.MeasureDelayResponse;
 
 public class DelayMeasureHandler extends UntypedActor {
 	

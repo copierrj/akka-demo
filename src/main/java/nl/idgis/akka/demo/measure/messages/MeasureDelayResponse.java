@@ -1,6 +1,8 @@
-package nl.idgis.akka.demo;
+package nl.idgis.akka.demo.measure.messages;
 
 import java.io.Serializable;
+
+import nl.idgis.akka.demo.echo.messages.EchoResponse;
 
 public class MeasureDelayResponse implements Serializable {
 	

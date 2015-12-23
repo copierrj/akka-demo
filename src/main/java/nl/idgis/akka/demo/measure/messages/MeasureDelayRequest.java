@@ -1,9 +1,10 @@
-package nl.idgis.akka.demo;
+package nl.idgis.akka.demo.measure.messages;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 import akka.actor.ActorRef;
+import nl.idgis.akka.demo.echo.messages.EchoRequest;
 
 public class MeasureDelayRequest implements Serializable {
 	

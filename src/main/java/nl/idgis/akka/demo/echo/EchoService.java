@@ -1,10 +1,12 @@
-package nl.idgis.akka.demo;
+package nl.idgis.akka.demo.echo;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import nl.idgis.akka.demo.echo.messages.EchoRequest;
+import nl.idgis.akka.demo.echo.messages.EchoResponse;
 import scala.concurrent.duration.FiniteDuration;
 
 public class EchoService extends UntypedActor {

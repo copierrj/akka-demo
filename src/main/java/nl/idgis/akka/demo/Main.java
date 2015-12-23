@@ -2,6 +2,13 @@ package nl.idgis.akka.demo;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
+import nl.idgis.akka.demo.echo.EchoService;
+import nl.idgis.akka.demo.echo.messages.EchoRequest;
+import nl.idgis.akka.demo.measure.DelayMeasureService;
+import nl.idgis.akka.demo.measure.messages.MeasureDelayRequest;
+import nl.idgis.akka.demo.print.PrintService;
+import nl.idgis.akka.demo.print.messages.AwaitCount;
+import nl.idgis.akka.demo.print.messages.CountReached;
 
 public class Main extends UntypedActor {
 	
