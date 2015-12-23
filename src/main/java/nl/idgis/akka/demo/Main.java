@@ -36,9 +36,9 @@ public class Main extends UntypedActor {
 
 		log.debug("starting child actors...");
 		
-		echoService = getContext().actorOf(EchoService.props());
-		measureService = getContext().actorOf(MeasureService.props());
-		printService = getContext().actorOf(PrintService.props());
+		echoService = getContext().actorOf(EchoService.props(), "echo");
+		measureService = getContext().actorOf(MeasureService.props(), "measure");
+		printService = getContext().actorOf(PrintService.props(), "print");
 		
 		log.debug("child actors started");
 		
@@ -57,6 +57,11 @@ public class Main extends UntypedActor {
 		log.debug("waiting for all measure results being printed");
 		printService.tell(new AwaitCount(REQUEST_COUNT), getSelf());
 	}
+	
+	@Override
+	public void postStop() {
+		log.debug("stopped");
+	}
 
 	@Override
 	public void onReceive(Object msg) throws Exception {
@@ -68,6 +73,7 @@ public class Main extends UntypedActor {
 	}
 
 	private void handleCountReached(CountReached msg) {
+		log.debug("print service reported {} printed lines", msg.getCount());
 		log.info("all measurements taken and printed, stopping...");
 		getContext().stop(getSelf());
 	}

@@ -5,24 +5,47 @@ import java.util.Objects;
 
 import akka.actor.ActorRef;
 
+/**
+ * Requests the {@link nl.idgis.akka.demo.measure.MeasureService MeasureService}
+ * to measure the time it takes for the given target to respond to the
+ * given message. 
+ * 
+ * @author Reijer Copier <reijer.copier@idgis.nl>
+ *
+ */
 public class MeasureDelay implements Serializable {
-
-	private static final long serialVersionUID = 6317302736152244607L;
+	
+	private static final long serialVersionUID = -4211555864184138375L;
 
 	private final ActorRef target;
 	
-	private final Object request;
+	private final Object message;
 	
-	public MeasureDelay(ActorRef echoService, Object request) {
-		this.target = Objects.requireNonNull(echoService, "target must not be null");
-		this.request = Objects.requireNonNull(request, "request must not be null");
+	/**
+	 * Create a new {@link MeasureDelay} request for a message to be send
+	 * to a specific target actor.
+	 * 
+	 * @param target the actor to send the message to.
+	 * @param message the message to send.
+	 */
+	public MeasureDelay(ActorRef target, Object message) {
+		this.target = Objects.requireNonNull(target, "target must not be null");
+		this.message = Objects.requireNonNull(message, "message must not be null");
 	}
 
+	/**
+	 * 
+	 * @return the target to send a message to.
+	 */
 	public ActorRef getTarget() {
 		return target;
 	}
 
-	public Object getRequest() {
-		return request;
+	/**
+	 * 
+	 * @return the message to send.
+	 */
+	public Object getMessage() {
+		return message;
 	}
 }
