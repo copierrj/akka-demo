@@ -5,8 +5,8 @@ import java.util.Objects;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import nl.idgis.akka.demo.echo.messages.EchoResponse;
-import nl.idgis.akka.demo.measure.messages.MeasureDelayResponse;
+
+import nl.idgis.akka.demo.measure.messages.MeasuredDelay;
 
 public class MeasureHandler extends UntypedActor {
 	
@@ -28,21 +28,12 @@ public class MeasureHandler extends UntypedActor {
 
 	@Override
 	public void onReceive(Object msg) throws Exception {
-		if(msg instanceof EchoResponse) {
-			handleEchoResponse((EchoResponse)msg);
-		} else {
-			unhandled(msg);
-		}
-	}
-
-	private void handleEchoResponse(EchoResponse msg) {
 		sender.tell(
-			new MeasureDelayResponse(
+			new MeasuredDelay(
 				msg, 
 				System.currentTimeMillis() - startTime), 
 			getSelf());
 		
 		getContext().stop(getSelf());
 	}
-
 }
