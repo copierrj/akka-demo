@@ -17,9 +17,9 @@ public class MeasureDelay implements Serializable {
 	
 	private static final long serialVersionUID = -4211555864184138375L;
 
-	private final ActorRef target;
+	protected final ActorRef target;
 	
-	private final Object message;
+	protected final Object message;
 	
 	/**
 	 * Create a new {@link MeasureDelay} request for a message to be send
@@ -47,5 +47,10 @@ public class MeasureDelay implements Serializable {
 	 */
 	public Object getMessage() {
 		return message;
+	}
+
+	@Override
+	public String toString() {
+		return "MeasureDelay [target=" + target + ", message=" + message + "]";
 	}
 }

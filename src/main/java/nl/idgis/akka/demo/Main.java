@@ -3,12 +3,16 @@ package nl.idgis.akka.demo;
 import java.util.stream.Stream;
 
 import akka.actor.ActorRef;
+import akka.actor.PoisonPill;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.japi.Procedure;
 
 import nl.idgis.akka.demo.echo.EchoService;
+import nl.idgis.akka.demo.measure.MeasureAverageService;
 import nl.idgis.akka.demo.measure.MeasureService;
+import nl.idgis.akka.demo.measure.messages.MeasureAverageDelay;
 import nl.idgis.akka.demo.measure.messages.MeasureDelay;
 import nl.idgis.akka.demo.message.DemoMessage;
 import nl.idgis.akka.demo.print.PrintService;
@@ -27,7 +31,7 @@ public class Main extends UntypedActor {
 	
 	private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	
-	private final int REQUEST_COUNT = 10;
+	private final int REQUEST_COUNT = 10, AVERAGE_REQUEST_COUNT = 2;
 	
 	private ActorRef echoService, measureService, printService;
 	
@@ -75,8 +79,54 @@ public class Main extends UntypedActor {
 
 	private void handleCountReached(CountReached msg) {
 		log.debug("print service reported {} printed lines", msg.getCount());
-		log.info("all measurements taken and printed, stopping...");
-		getContext().stop(getSelf());
+		log.info("all measurements taken and printed, next...");
+		
+		log.debug("killing measure service...");
+		measureService.tell(PoisonPill.getInstance(), getSelf());
+		
+		log.debug("starting measure average service...");
+		ActorRef measureAverageService = getContext().actorOf(
+			MeasureAverageService.props(), "measure-average");
+		
+		log.debug("measure average service started");
+		
+		log.debug("sending average measure requests...");
+		
+		for(int i = 0; i < AVERAGE_REQUEST_COUNT; i++) {
+			measureAverageService.tell(
+				new MeasureAverageDelay(
+					echoService,
+					new DemoMessage("message" + i),
+					REQUEST_COUNT), 
+				printService);
+		}
+		
+		printService.tell(new AwaitCount(REQUEST_COUNT + AVERAGE_REQUEST_COUNT), getSelf());
+		
+		getContext().become(waitingForAveragesPrinted());
+	}
+	
+	private Procedure<Object> waitingForAveragesPrinted() {
+		return new Procedure<Object>() {
+
+			@Override
+			public void apply(Object msg) throws Exception {
+				if(msg instanceof CountReached) {
+					handleCountReached((CountReached)msg);
+				} else {
+					unhandled(msg);
+				}
+				
+			}
+			
+			private void handleCountReached(CountReached msg) {
+				log.debug("print service reported {} printed lines", msg.getCount());
+				log.info("all measurements taken and printed, stopping...");
+				
+				getContext().stop(getSelf());
+			}
+			
+		};
 	}
 	
 	public static void main(String[] args) {
