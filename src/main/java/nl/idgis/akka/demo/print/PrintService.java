@@ -8,10 +8,14 @@ import java.util.Set;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import nl.idgis.akka.demo.print.messages.AwaitCount;
 import nl.idgis.akka.demo.print.messages.CountReached;
 
 public class PrintService extends UntypedActor {
+	
+	private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 	
 	private int count;
 	
@@ -31,8 +35,8 @@ public class PrintService extends UntypedActor {
 	public void onReceive(Object msg) throws Exception {
 		if(msg instanceof AwaitCount) {
 			handleAwaitCount((AwaitCount)msg);
-		} else {		
-			System.out.println("" + count++ + ": " + msg);
+		} else {
+			log.info("{}: {}", count++, msg);
 		}
 		
 		Set<ActorRef> waitingForCount = waiting.get(count);
