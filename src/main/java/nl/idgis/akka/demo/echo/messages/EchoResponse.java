@@ -7,13 +7,13 @@ public class EchoResponse implements Serializable {
 
 	private static final long serialVersionUID = 359902123915080518L;
 	
-	private final String message;
+	private final Object message;
 	
-	public EchoResponse(String message) {
+	public EchoResponse(Object message) {
 		this.message = Objects.requireNonNull(message, "message must not be null");
 	}
 	
-	public String getMessage() {
+	public Object getMessage() {
 		return message;
 	}
 
