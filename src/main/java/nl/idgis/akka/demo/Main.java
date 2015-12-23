@@ -1,26 +1,21 @@
 package nl.idgis.akka.demo;
 
-import java.util.concurrent.TimeUnit;
-
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
-import scala.concurrent.Await;
-import scala.concurrent.duration.Duration;
+import akka.actor.UntypedActor;
 
-public class Main {
-
-	public static void main(String[] args) throws Exception {
-		ActorSystem actorSystem = ActorSystem.create();
+public class Main extends UntypedActor {
+	
+	final int REQUEST_COUNT = 10;
+	
+	ActorRef echoService, delayMeasureService, printService;
+	
+	@Override
+	public void preStart() throws Exception {
+		echoService = getContext().actorOf(EchoService.props());
+		delayMeasureService = getContext().actorOf(DelayMeasureService.props());
+		printService = getContext().actorOf(PrintService.props());
 		
-		ActorRef echoService = actorSystem.actorOf(EchoService.props());
-		ActorRef delayMeasureService = actorSystem.actorOf(DelayMeasureService.props());
-		ActorRef printService = actorSystem.actorOf(PrintService.props());
-		
-		final int requestCount = 10;
-		
-		for(int i = 0; i < requestCount; i++) {
+		for(int i = 0; i < REQUEST_COUNT; i++) {
 			delayMeasureService.tell(
 				new MeasureDelayRequest(
 					echoService,
@@ -28,13 +23,19 @@ public class Main {
 				printService);
 		}
 		
-		Await.ready(
-			Patterns.ask(
-				printService, 
-				new AwaitCount(requestCount), 
-				Timeout.apply(5, TimeUnit.SECONDS)),
-			Duration.Inf());
-		
-		Await.ready(actorSystem.terminate(), Duration.Inf());
+		printService.tell(new AwaitCount(REQUEST_COUNT), getSelf());
+	}
+
+	@Override
+	public void onReceive(Object msg) throws Exception {
+		if(msg instanceof CountReached) {
+			handleCountReached((CountReached)msg);
+		} else {
+			unhandled(msg);
+		}
+	}
+
+	private void handleCountReached(CountReached msg) {
+		getContext().stop(getSelf());
 	}
 }
