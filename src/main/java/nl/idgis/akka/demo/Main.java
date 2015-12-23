@@ -10,6 +10,7 @@ import akka.event.LoggingAdapter;
 import nl.idgis.akka.demo.echo.EchoService;
 import nl.idgis.akka.demo.measure.MeasureService;
 import nl.idgis.akka.demo.measure.messages.MeasureDelay;
+import nl.idgis.akka.demo.message.DemoMessage;
 import nl.idgis.akka.demo.print.PrintService;
 import nl.idgis.akka.demo.print.messages.AwaitCount;
 import nl.idgis.akka.demo.print.messages.CountReached;
@@ -48,7 +49,7 @@ public class Main extends UntypedActor {
 			measureService.tell(
 				new MeasureDelay(
 					echoService,
-					"message" + i), 
+					new DemoMessage("message" + i)), 
 				printService);
 		}
 		
