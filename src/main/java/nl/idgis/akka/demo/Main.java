@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import nl.idgis.akka.demo.echo.EchoService;
 import nl.idgis.akka.demo.echo.messages.EchoRequest;
-import nl.idgis.akka.demo.measure.DelayMeasureService;
+import nl.idgis.akka.demo.measure.MeasureService;
 import nl.idgis.akka.demo.measure.messages.MeasureDelayRequest;
 import nl.idgis.akka.demo.print.PrintService;
 import nl.idgis.akka.demo.print.messages.AwaitCount;
@@ -19,7 +19,7 @@ public class Main extends UntypedActor {
 	@Override
 	public void preStart() throws Exception {
 		echoService = getContext().actorOf(EchoService.props());
-		delayMeasureService = getContext().actorOf(DelayMeasureService.props());
+		delayMeasureService = getContext().actorOf(MeasureService.props());
 		printService = getContext().actorOf(PrintService.props());
 		
 		for(int i = 0; i < REQUEST_COUNT; i++) {

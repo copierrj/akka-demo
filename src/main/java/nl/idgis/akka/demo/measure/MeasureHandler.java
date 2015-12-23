@@ -8,20 +8,20 @@ import akka.actor.UntypedActor;
 import nl.idgis.akka.demo.echo.messages.EchoResponse;
 import nl.idgis.akka.demo.measure.messages.MeasureDelayResponse;
 
-public class DelayMeasureHandler extends UntypedActor {
+public class MeasureHandler extends UntypedActor {
 	
 	private final ActorRef sender;
 	
 	private final long startTime;
 	
-	public DelayMeasureHandler(ActorRef sender, long startTime) {
+	public MeasureHandler(ActorRef sender, long startTime) {
 		this.sender = sender;
 		this.startTime = startTime;
 	}
 	
 	public static Props props(ActorRef sender, long startTime) {
 		return Props.create(
-			DelayMeasureHandler.class, 
+			MeasureHandler.class, 
 			Objects.requireNonNull(sender, "sender must not be null"),
 			Objects.requireNonNull(startTime, "startTime must not be null"));
 	}

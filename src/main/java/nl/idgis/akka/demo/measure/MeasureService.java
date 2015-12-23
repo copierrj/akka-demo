@@ -5,7 +5,7 @@ import akka.actor.Props;
 import akka.actor.UntypedActor;
 import nl.idgis.akka.demo.measure.messages.MeasureDelayRequest;
 
-public class DelayMeasureService extends UntypedActor {
+public class MeasureService extends UntypedActor {
 
 	@Override
 	public void onReceive(Object msg) throws Exception {
@@ -17,12 +17,12 @@ public class DelayMeasureService extends UntypedActor {
 	}
 	
 	public static Props props() {
-		return Props.create(DelayMeasureService.class);
+		return Props.create(MeasureService.class);
 	}
 
 	private void handleMeasureDelayRequest(MeasureDelayRequest msg) {
 		ActorRef delayMeasureHandler = getContext().actorOf(
-			DelayMeasureHandler.props(getSender(), System.currentTimeMillis()));
+			MeasureHandler.props(getSender(), System.currentTimeMillis()));
 		
 		msg.getEchoService().tell(msg.getEchoRequest(), delayMeasureHandler);
 	}
