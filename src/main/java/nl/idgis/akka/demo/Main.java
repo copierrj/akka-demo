@@ -129,15 +129,21 @@ public class Main extends UntypedActor {
 		};
 	}
 	
-	public static void main(String[] args) {
-		// call akkaMain with the same arguments,
-		// prepended with the name of this class.
+	public static void main(String[] args) throws Exception {
 		
-		akka.Main.main(
-			Stream
-				.concat(
-					Stream.of(Main.class.getCanonicalName()),
-					Stream.of(args))
-				.toArray(String[]::new));
+		for (;;) {
+			
+			// call akkaMain with the same arguments,
+			// prepended with the name of this class.
+		
+			akka.Main.main(
+				Stream
+					.concat(
+						Stream.of(Main.class.getCanonicalName()),
+						Stream.of(args))
+					.toArray(String[]::new));
+			
+			Thread.sleep(10000);
+		}
 	}
 }
