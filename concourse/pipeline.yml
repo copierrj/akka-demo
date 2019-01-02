@@ -1,0 +1,23 @@
+---
+resources:
+- name: source-code
+  type: git
+  source:
+    uri: https://github.com/copierrj/akka-demo.git
+    branch: master
+    
+- name: docker-image
+  type: docker-image
+  source:
+    username: copierrj
+    password: ((docker-hub-password))
+    repository: copierrj/akka-demo
+    
+jobs:
+- name: build
+  public: true
+  plan:
+  - get: source-code
+  - put: docker-image
+    params:
+      build: source-code
